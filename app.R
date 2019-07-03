@@ -17,16 +17,22 @@ ui <- fluidPage(
         column(3,
                h4("First variable"),
                selectInput("pdf", "Choose the pdf:",
-                           choices = c("Standard Normal" = "rnorm", "Exponential", "Uniform")),
-               conditionalPanel(
-                   condition="input.pdf==\"rnorm\"",
-                   helpText("Contour plot of the pdf of N(0,\\(\\Sigma\\))"),
-                   helpText("where \\(\\Sigma=\\begin{pmatrix}\\sigma_1^2&\\rho\\sigma_1\\sigma_2\\\\\\rho\\sigma_1\\sigma_2&\\sigma_2^2\\end{pmatrix}\\)"),
-                   sliderInput("mvnorm.sd1","\\(\\sigma_1\\)",min=0.1,max=10,value=1,step=0.1),
-                   sliderInput("mvnorm.sd2","\\(\\sigma_2\\)",min=0.1,max=10,value=1,step=0.1),
-                   sliderInput("mvnorm.rho","\\(\\rho\\)",min=-0.99,max=0.99,value=0,step=0.01),
-                   helpText("(using the package mvtnorm in R)")
-               )
+                           choices = c("standard normal", "binomial", "poisson")),
+               sliderInput("n1",
+                           "Number of trials:",
+                           min = 10,
+                           max = 1000,
+                           value = 30),
+               
+               sliderInput("mean1",
+                           "\\(n\\):",
+                           min = 0,
+                           max = 1,
+                           value = 0.5),
+               
+               sliderInput("sd1", "Standard deviation:",
+                           min = 0, max = 5,
+                           value = 1, step = 0.1)
         ),
         column(3, offset = 1,
                h4("Second variable"),
