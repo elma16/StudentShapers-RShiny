@@ -1,24 +1,33 @@
-#----------------------
+#
+# This is a Shiny web application. You can run the application by clicking
+# the 'Run App' button above.
+#
+# Find out more about building applications with Shiny here:
+#
+#    http://shiny.rstudio.com/
+#
 
 library(shiny)
 
-
-#----------------------
-
 # Define UI for application that draws a histogram
-ui <- navbarPage("Convolutions",
-                 
+ui <- fluidPage(
+
+    # Application title
+    titlePanel("Weak Law of Large Numbers"),
+
     # Sidebar with a slider input for number of bins 
     sidebarLayout(
         sidebarPanel(
-            radioButtons("gamplottype", "Choose the plot",
-                         list("Poisson" = "po","binomial"="bin"))
+            sliderInput("bins",
+                        "Number of bins:",
+                        min = 1,
+                        max = 50,
+                        value = 30)
         ),
 
         # Show a plot of the generated distribution
         mainPanel(
-           plotOutput("distPlot"),
-           p("If X and Y are independent random variables and \\(Z = X + Y)\\ , then 8>< X fX (x)fY (z )")
+           plotOutput("distPlot")
         )
     )
 )

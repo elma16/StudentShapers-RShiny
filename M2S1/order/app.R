@@ -4,11 +4,11 @@ library(shiny)
 #get a random sample
 #create order statistics
 
-# Define UI for application that draws a histogram
+#----------------------
 ui <- fluidPage(
    
    # Application title
-   titlePanel("Old Faithful Geyser Data"),
+   titlePanel("Order Statistics in M2S1"),
    
    # Sidebar with a slider input for number of bins 
    sidebarLayout(
@@ -27,7 +27,7 @@ ui <- fluidPage(
    )
 )
 
-# Define server logic required to draw a histogram
+#------------------------------------
 server <- function(input, output) {
    
    output$distPlot <- renderPlot({
