@@ -76,8 +76,8 @@ server <- function(input, output) {
         
         if (input$illustration=="poi"){
             lam1 <- input$poi.lam1
-            lam2 <- input$poi.lam2
-            plot(x,qpois(n,lam1),type="l",xlab="",ylab="")
+            #lam2 <- input$poi.lam2
+            plot(x,ppois(0.5,lam1),type="l",xlab="",ylab="")
             #plot(x,ppois(n,lam2),type="l",xlab="",ylab="")
         }
         
