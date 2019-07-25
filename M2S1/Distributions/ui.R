@@ -20,7 +20,7 @@ tabPanel("Univariate Families",
   sidebarPanel(
     selectInput("illustration", "Choose Distribution:",
                 #
-                choices = c("Gamma" = "gamma","t-distribution"="tdistr","\\(\\chi^2\\)-distribution"="chisq","\\(\\beta\\)-distribution"="b")),
+                choices = c("Gamma" = "gamma","t-distribution"="tdistr","\\(\\chi^2\\)-distribution"="chisq","\\(\\beta\\)-distribution"="b", "Uniform" = "unif", "F" = "F")),
 #gamma
     conditionalPanel(
       condition="input.illustration==\"gamma\"",
@@ -68,8 +68,13 @@ conditionalPanel(
       sliderInput("b.ncp","Non-centrality parameter : \\(\\delta^2\\)",min=-0.99,max=0.99,value=0,step=0.01),
       radioButtons("bplottype", "Choose the plot",
                    list("cdf" = "cdf","pdf"="pdf"))
-      
-    )
+    ),
+#uniform distribution
+conditionalPanel(
+  condition="input.illustration==\"unif\"",
+  sliderInput("unif.n",withMathJax(helpText("Number of observations : \\(n\\)")),min=-10,max=10,value=1,step=1),
+  sliderInput("unif.minmax",withMathJax(helpText("Lower and upper bounds : \\(min\\)")),value = c(-15,15),min=-10,max=10)
+)
 ),
 
 mainPanel(
@@ -98,6 +103,12 @@ mainPanel(
   conditionalPanel(
     condition="input.illustration==\"dir\"",
     helpText("\\(\\chi^2_n(\\delta)\\) distribution"),
+    helpText("f")
+  ),
+  #uniform distribution
+  conditionalPanel(
+    condition="input.illustration==\"unif\"",
+    helpText("\\(U(a,b)\\) distribution"),
     helpText("f")
   ),
   #beta distribution
