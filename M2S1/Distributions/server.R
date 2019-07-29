@@ -1,18 +1,23 @@
+#-------------
 library(shiny)
 library(shinythemes)
+library(mvtnorm)
+#-------------
 
 shinyServer(function(input, output) {
   
   #univariate dists
+  
+  #gamma
   output$cdf <- renderPlot({
     if (input$illustration=="gamma"){
       par(mar=c(2.1,2.1,0.1,0.1))
       shp <- input$gamma.shp
       rt <- input$gamma.rt
-      x <- seq(0,b*(a+ncp)/(a*max(b-2,1))*4,length.out=500)
-        plot(x,pbeta(x,a,b,ncp),type="l",xlab="",ylab="")
+      x <- seq(0,10,length.out=500)
+      plot(x,dgamma(x,shp,rt),type="l",xlab="",ylab="")
     }
-
+  #t-distribution
     if (input$illustration=="tdistr"){
       par(mar=c(2.1,2.1,0.1,0.1))
       df <- input$tdistr.df
@@ -30,6 +35,7 @@ shinyServer(function(input, output) {
       }
       
     }
+    #chi sq dist
     if (input$illustration=="chisq"){
       par(mar=c(2.1,2.1,0.1,0.1))
       df <- input$chisq.df
@@ -40,6 +46,7 @@ shinyServer(function(input, output) {
       if (input$chisqplottype=="cdf")
         plot(x,pchisq(x,df=df,ncp=ncp),type="l",xlab="",ylab="")
     }
+    #beta dist
     if (input$illustration=="b"){
       par(mar=c(2.1,2.1,0.1,0.1))
       a <- input$b.a
@@ -51,10 +58,17 @@ shinyServer(function(input, output) {
       if (input$bplottype=="cdf")
         plot(x,pbeta(x,a,b,ncp),type="l",xlab="",ylab="")
     }
+    #uniform dist
+    if (input$illustration=="unif"){
+      par(mar=c(2.1,2.1,0.1,0.1))
+      n <- input$unif.n
+      minmax <- input$unif.minmax
+      x <- seq(0,10,length.out=500)
+      plot(x,dunif(x,0,1),type="l",xlab="",ylab="")
+    }
   })
   output$mvcdf <- renderPlot({
     if (input$illustration1=="mvnorm"){
-      library(mvtnorm)
       rho <- input$mvnorm.rho
       sd1 <- input$mvnorm.sd1
       sd2 <- input$mvnorm.sd2
@@ -64,7 +78,6 @@ shinyServer(function(input, output) {
       contour(x,y,outer(x,y,FUN=function(x,y) dmvnorm(cbind(x,y),sigma=Sigma)))
     }
     if (input$illustration1=="dir"){
-      library(mvtnorm)
       rho <- input$mvnorm.rho
       sd1 <- input$mvnorm.sd1
       sd2 <- input$mvnorm.sd2

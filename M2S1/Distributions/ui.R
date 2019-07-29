@@ -25,9 +25,7 @@ tabPanel("Univariate Families",
     conditionalPanel(
       condition="input.illustration==\"gamma\"",
       sliderInput("gamma.shp","Shape \\(n\\)",min=1,max=100,value=1,step=1),
-      sliderInput("gamma.rt","Rate \\(\\delta^2\\)",min=0,max=5,value=0,step=0.1),
-      radioButtons("gamplottype", "Choose the plot",
-                   list("cdf" = "cdf","pdf"="pdf"))
+      sliderInput("gamma.rt","Rate \\(\\delta^2\\)",min=0,max=5,value=0,step=0.1)
     ),
 #multivariable normal
     conditionalPanel(
@@ -59,7 +57,7 @@ conditionalPanel(
   sliderInput("dir.ncp","non-centrality parameter \\(\\delta^2\\)",min=0,max=5,value=0,step=0.1),
   radioButtons("dirplottype", "Choose the plot",
                list("cdf" = "cdf","pdf"="pdf"))
-),
+  ),
 #beta distribution
     conditionalPanel(
       condition="input.illustration==\"b\"",
@@ -74,7 +72,8 @@ conditionalPanel(
   condition="input.illustration==\"unif\"",
   sliderInput("unif.n",withMathJax(helpText("Number of observations : \\(n\\)")),min=-10,max=10,value=1,step=1),
   sliderInput("unif.minmax",withMathJax(helpText("Lower and upper bounds : \\(min\\)")),value = c(-15,15),min=-10,max=10)
-)
+  )
+
 ),
 
 mainPanel(
