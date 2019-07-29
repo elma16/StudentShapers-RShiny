@@ -20,7 +20,7 @@ tabPanel("Univariate Families",
   sidebarPanel(
     selectInput("illustration", "Choose Distribution:",
                 #
-                choices = c("Gamma" = "gamma","t-distribution"="tdistr","\\(\\chi^2\\)-distribution"="chisq","\\(\\beta\\)-distribution"="b", "Uniform" = "unif", "F" = "F")),
+                choices = c("Uniform" = "unif", "Exponential" = "exp", "Gamma" = "gamma", "Weibull" = "wei" , "Normal" = "norm" , "t-distribution"="tdistr", "Pareto" = "pareto" ,"\\(\\beta\\)-distribution"="b"  , "\\(\\chi^2\\)-distribution"="chisq", "F" = "f","Cauchy" = "cau")),
 #gamma
     conditionalPanel(
       condition="input.illustration==\"gamma\"",
@@ -72,7 +72,43 @@ conditionalPanel(
   condition="input.illustration==\"unif\"",
   sliderInput("unif.n",withMathJax(helpText("Number of observations : \\(n\\)")),min=-10,max=10,value=1,step=1),
   sliderInput("unif.minmax",withMathJax(helpText("Lower and upper bounds : \\(min\\)")),value = c(-15,15),min=-10,max=10)
-  )
+  ),
+#F distribution
+conditionalPanel(
+  condition="input.illustration==\"f\"",
+  sliderInput("f.df1",withMathJax(helpText("Degrees of Freedom : \\(\\d_1\\)")),min=-10,max=10,value=1,step=1),
+  sliderInput("f.df2",withMathJax(helpText("Degrees of Freedom : \\(\\d_2\\)")),min=-10,max=10,value=1,step=1),
+  sliderInput("f.ncp","Non-centrality parameter : \\(\\delta^2\\)",min=-0.99,max=0.99,value=0,step=0.01)
+),
+#Weibull distribution
+conditionalPanel(
+  condition="input.illustration==\"wei\"",
+  sliderInput("wei.shp",withMathJax(helpText("Shape : \\(\\d_1\\)")),min=-10,max=10,value=1,step=1),
+  sliderInput("wei.scl",withMathJax(helpText("Scale : \\(\\d_2\\)")),min=-10,max=10,value=1,step=1)
+),
+#Cauchy distribution
+conditionalPanel(
+  condition="input.illustration==\"cau\"",
+  sliderInput("cau.loc",withMathJax(helpText("Location : \\(\\d_1\\)")),min=-10,max=10,value=1,step=1),
+  sliderInput("cau.scl",withMathJax(helpText("Scale : \\(\\d_2\\)")),min=-10,max=10,value=1,step=1)
+),
+#Exponential distribution
+conditionalPanel(
+  condition="input.illustration==\"exp\"",
+  sliderInput("exp.rate",withMathJax(helpText("Rate : \\(\\d_1\\)")),min=-10,max=10,value=1,step=1)
+),
+#normal distribution
+conditionalPanel(
+  condition="input.illustration==\"norm\"",
+  sliderInput("norm.mean",withMathJax(helpText("Mean : \\(\\d_1\\)")),min=-10,max=10,value=1,step=1),
+  sliderInput("norm.sd",withMathJax(helpText("Standard Deviation : \\(\\d_1\\)")),min=-10,max=10,value=1,step=1)
+),
+#pareto distribution
+conditionalPanel(
+  condition="input.illustration==\"par\"",
+  sliderInput("par.loc",withMathJax(helpText("Rate : \\(\\d_1\\)")),min=-10,max=10,value=1,step=1),
+  sliderInput("par.shp",withMathJax(helpText("Rate : \\(\\d_1\\)")),min=-10,max=10,value=1,step=1)
+)
 
 ),
 
@@ -166,11 +202,6 @@ tabPanel("Exponential Families",
 ),
 
 tabPanel("Location and Scale Families", 
-         "this"
-         
-),
-
-tabPanel("Transformation of Random Variables", 
          "this"
          
 )

@@ -2,12 +2,12 @@
 library(shiny)
 library(shinythemes)
 library(mvtnorm)
+library(EnvStats)
 #-------------
 
 shinyServer(function(input, output) {
   
   #univariate dists
-  
   #gamma
   output$cdf <- renderPlot({
     if (input$illustration=="gamma"){
@@ -66,7 +66,55 @@ shinyServer(function(input, output) {
       x <- seq(0,10,length.out=500)
       plot(x,dunif(x,0,1),type="l",xlab="",ylab="")
     }
+    #F dist
+    if (input$illustration=="f"){
+      par(mar=c(2.1,2.1,0.1,0.1))
+      df1 <- input$f.df1
+      df2 <- input$f.df2
+      ncp <- input$f.ncp
+      x <- seq(0,10,length.out=500)
+      plot(x,df(x,df1,df2,ncp),type="l",xlab="",ylab="")
+    }
+    #weibull dist
+    if (input$illustration=="wei"){
+      par(mar=c(2.1,2.1,0.1,0.1))
+      shp <- input$wei.shp
+      scl <- input$wei.scl
+      x <- seq(0,10,length.out=500)
+      plot(x,dweibull(x,shp,scl),type="l",xlab="",ylab="")
+    }
+    #cauchy dist
+    if (input$illustration=="cau"){
+      par(mar=c(2.1,2.1,0.1,0.1))
+      loc <- input$cau.df1
+      scl <- input$cau.df2
+      x <- seq(0,10,length.out=500)
+      plot(x,dcauchy(x,loc,scl),type="l",xlab="",ylab="")
+    }
+    #exponential dist
+    if (input$illustration=="exp"){
+      par(mar=c(2.1,2.1,0.1,0.1))
+      rate <- input$exp.rate
+      x <- seq(0,10,length.out=500)
+      plot(x,dexp(x,rate),type="l",xlab="",ylab="")
+    }
+    #normal dist
+    if (input$illustration=="norm"){
+      par(mar=c(2.1,2.1,0.1,0.1))
+      mean <- input$norm.mean
+      x <- seq(0,10,length.out=500)
+      plot(x,dnorm(x,mean,sd),type="l",xlab="",ylab="")
+    }
+    #pareto dist
+    if (input$illustration=="par"){
+      par(mar=c(2.1,2.1,0.1,0.1))
+      loc <- input$par.loc
+      shp <- input$par.shp
+      x <- seq(0,10,length.out=500)
+      plot(x,dpareto(x,loc,shp),type="l",xlab="",ylab="")
+    }
   })
+  #multivariable normal
   output$mvcdf <- renderPlot({
     if (input$illustration1=="mvnorm"){
       rho <- input$mvnorm.rho
@@ -77,6 +125,7 @@ shinyServer(function(input, output) {
       par(mar=c(2.1,2.1,0.1,0.1))
       contour(x,y,outer(x,y,FUN=function(x,y) dmvnorm(cbind(x,y),sigma=Sigma)))
     }
+    #dirichlet distribution
     if (input$illustration1=="dir"){
       rho <- input$mvnorm.rho
       sd1 <- input$mvnorm.sd1
