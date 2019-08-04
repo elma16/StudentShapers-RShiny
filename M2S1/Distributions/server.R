@@ -63,8 +63,8 @@ shinyServer(function(input, output) {
       par(mar=c(2.1,2.1,0.1,0.1))
       n <- input$unif.n
       minmax <- input$unif.minmax
-      x <- seq(0,10,length.out=500)
-      plot(x,dunif(x,0,1),type="l",xlab="",ylab="")
+      x <- seq(-20,20,length.out=500)
+      plot(x,dunif(x,minmax[1],minmax[2]),type="l",xlab="",ylab="")
     }
     #F dist
     if (input$illustration=="f"){
@@ -86,8 +86,8 @@ shinyServer(function(input, output) {
     #cauchy dist
     if (input$illustration=="cau"){
       par(mar=c(2.1,2.1,0.1,0.1))
-      loc <- input$cau.df1
-      scl <- input$cau.df2
+      loc <- input$cau.loc
+      scl <- input$cau.scl
       x <- seq(0,10,length.out=500)
       plot(x,dcauchy(x,loc,scl),type="l",xlab="",ylab="")
     }
@@ -96,12 +96,13 @@ shinyServer(function(input, output) {
       par(mar=c(2.1,2.1,0.1,0.1))
       rate <- input$exp.rate
       x <- seq(0,10,length.out=500)
-      plot(x,dexp(x,rate),type="l",xlab="",ylab="")
+      plot(x,dexp(x,rate,),type="l",xlab="",ylab="")
     }
     #normal dist
     if (input$illustration=="norm"){
       par(mar=c(2.1,2.1,0.1,0.1))
       mean <- input$norm.mean
+      sd <- input$norm.sd
       x <- seq(0,10,length.out=500)
       plot(x,dnorm(x,mean,sd),type="l",xlab="",ylab="")
     }

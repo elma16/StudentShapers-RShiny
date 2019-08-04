@@ -11,6 +11,7 @@ ui <- bootstrapPage(
    sidebarPanel(
       selectInput("illustration", "Choose Distribution:",choices = c("Binomial" = "binom", "Poisson" = "poi","Normal"="norm")),
       numericInput("rstat", "rth order statistics:", 1, min = 1, max = 100),
+      
       conditionalPanel(
          condition="input.illustration==\"binom\"",
          sliderInput("binom.n","Number of attempts",min=1,max=100,value=10),
@@ -21,18 +22,15 @@ ui <- bootstrapPage(
       
       conditionalPanel(
          condition="input.illustration==\"poi\"",
-         sliderInput("norm.mu1",withMathJax("\\(\\mu_1\\)"),min=0.1,max=10,value=1,step=0.1),
-         sliderInput("norm.sd1","\\(\\sigma_1\\)",min=0.1,max=10,value=1,step=0.1),
-         sliderInput("norm.mu2","\\(\\mu_2\\)",min=0.1,max=10,value=1,step=0.1),
-         sliderInput("norm.sd2","\\(\\sigma_2\\)",min=0.1,max=10,value=1,step=0.1)
+         sliderInput("poi.n","Number of attempts",min=1,max=100,value=10),
+         sliderInput("poi.lam",withMathJax("\\(\\lambda\\)"),min=0.1,max=10,value=1,step=0.1)
       ),
       
       conditionalPanel(
          condition="input.illustration==\"norm\"",
-         sliderInput("norm.mu1",withMathJax("\\(\\mu_1\\)"),min=0.1,max=10,value=1,step=0.1),
-         sliderInput("norm.sd1","\\(\\sigma_1\\)",min=0.1,max=10,value=1,step=0.1),
-         sliderInput("norm.mu2","\\(\\mu_2\\)",min=0.1,max=10,value=1,step=0.1),
-         sliderInput("norm.sd2","\\(\\sigma_2\\)",min=0.1,max=10,value=1,step=0.1)
+         sliderInput("norm.n",withMathJax("\\(n\\)"),min=1,max=100,value=1,step=1),
+         sliderInput("norm.mean","\\(\\mu\\)",min=0.1,max=10,value=1,step=0.1),
+         sliderInput("norm.sd","\\(\\sigma\\)",min=0.1,max=10,value=1,step=0.1)
       ),
       
       withMathJax(helpText("F_Y(y) = sum_{j = r}^n"))
@@ -47,6 +45,8 @@ ui <- bootstrapPage(
 server <- function(input, output) {
    #observations for the order
    output$observations <- renderText({
+      
+      if(input$illustration=="binom"){
       n <- input$binom.n
       p <- input$binom.p
       size <- input$binom.size
@@ -58,16 +58,54 @@ server <- function(input, output) {
             #paste("\\hat{p}=",sum(X)/input$n,sep=""),
             "Ordered Observations:",paste(Xsorted, collapse =", "),
             sep="\n")
+      }
+      
+      if(input$illustration=="poi"){
+      n <- input$poi.n
+      lam <- input$poi.lam
+      Y <- rpois(n,lam)
+      Ysorted <- sort(Y,decreasing = FALSE)
+      paste("Observations:",
+            paste(Y,collapse=", "),
+            #paste("\\hat{p}=",sum(X)/input$n,sep=""),
+            "Ordered Observations:",paste(Ysorted, collapse =", "),
+            sep="\n")
+      }
+      
+      if(input$illustration=="norm"){
+      n <- input$norm.n
+      mean <- input$norm.mean
+      sd <- input$norm.sd
+      Z <- rnorm(m,mean,sd)
+      Zsorted <- sort(Z,decreasing = FALSE)
+      paste("Observations:",
+            paste(Z,collapse=", "),
+            #paste("\\hat{p}=",sum(X)/input$n,sep=""),
+            "Ordered Observations:",paste(Zsorted, collapse =", "),
+            sep="\n")
+      }
    })
-   output$likelihood <-   renderPlot({
-      set.seed(input$seed)
-      X <- rbinom(n,size=1,p)
-      #Y <- sum(choose(n,j),X^j(1-X)^j)
-      p <- seq(0,1,by=0.005)
-      plot()
-      plot(p,p^sum(X)*(1-p)^(input$n-sum(X)),xlab="p",ylab="L(p)",main="Likelihood function",type="l")
-      lines(rep(sum(X)/input$n,2),c(0,1000),col="red")
-   })
+   #output$likelihood <-   renderPlot({
+   #  
+   #    if(input$illustration=="binom"){
+   #    set.seed(input$seed)
+   #    X <- rbinom(n,size=1,p)
+   #    #Y <- sum(choose(n,j),X^j(1-X)^j)
+   #    p <- seq(0,1,by=0.005)
+   #    plot()
+   #    plot(p,p^sum(X)*(1-p)^(input$n-sum(X)),xlab="p",ylab="L(p)",main="Likelihood function",type="l")
+   #    lines(rep(sum(X)/input$n,2),c(0,1000),col="red")
+   #    }
+   #    
+   #    if(input$illustration=="poi"){
+   #       
+   #    }
+   #    
+   #    if(input$illustration=="norm"){
+   #       
+   #    }
+   #    
+   # })
 }
 
 # Run the application 
