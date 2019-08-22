@@ -3,7 +3,7 @@ Repository for my rshiny apps for the 2019 Imperial Student Shapers Project.
 
 ## Currently available web apps
 
- - [] Distributions
+ - [x] Distributions
  - [x] WLoLN
  - [x] Stattest
  - [x] Order
