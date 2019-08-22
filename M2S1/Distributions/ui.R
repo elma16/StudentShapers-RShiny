@@ -25,7 +25,9 @@ tabPanel("Univariate Families",
     conditionalPanel(
       condition="input.illustration==\"gamma\"",
       sliderInput("gamma.shp","Shape \\(n\\)",min=1,max=100,value=10,step=1),
-      sliderInput("gamma.rt","Rate \\(\\delta^2\\)",min=0,max=50,value=5,step=0.1)
+      sliderInput("gamma.rt","Rate \\(\\delta^2\\)",min=0,max=50,value=5,step=0.1),
+      radioButtons("gamma.plottype", "Choose the plot",
+                   list("cdf" = "cdf","pdf"="pdf"))
     ),
 #multivariable normal
     conditionalPanel(
@@ -70,45 +72,59 @@ conditionalPanel(
 #uniform distribution
 conditionalPanel(
   condition="input.illustration==\"unif\"",
-  sliderInput("unif.n",withMathJax(helpText("Number of observations : \\(n\\)")),min=-10,max=10,value=1,step=1),
-  sliderInput("unif.minmax",withMathJax(helpText("Lower and upper bounds : \\(minmax\\)")),min = -20, max = 20,value = c(-15,15))
+  sliderInput("unif.n",withMathJax(helpText("Number of observations : \\(n\\)")),min=1,max=100,value=5,step=1),
+  sliderInput("unif.minmax",withMathJax(helpText("Lower and upper bounds : \\(minmax\\)")),min = -20, max = 20,value = c(-15,15)),
+  radioButtons("unif.plottype", "Choose the plot",
+               list("cdf" = "cdf","pdf"="pdf"))
   ),
 #F distribution
 conditionalPanel(
   condition="input.illustration==\"f\"",
   sliderInput("f.df1",withMathJax(helpText("Degrees of Freedom : \\(d_1\\)")),min=0,max=10,value=1,step=1),
   sliderInput("f.df2",withMathJax(helpText("Degrees of Freedom : \\(d_2\\)")),min=0,max=10,value=1,step=1),
-  sliderInput("f.ncp","Non-centrality parameter : \\(\\delta^2\\)",min=0,max=0.99,value=0,step=0.01)
+  sliderInput("f.ncp","Non-centrality parameter : \\(\\delta^2\\)",min=0,max=0.99,value=0,step=0.01),
+  radioButtons("f.plottype", "Choose the plot",
+               list("cdf" = "cdf","pdf"="pdf"))
 ),
 #Weibull distribution
 conditionalPanel(
   condition="input.illustration==\"wei\"",
   sliderInput("wei.shp",withMathJax(helpText("Shape : \\(\\lambda\\)")),min=0,max=10,value=1,step=1),
-  sliderInput("wei.scl",withMathJax(helpText("Scale : \\(k\\)")),min=0,max=10,value=1,step=1)
+  sliderInput("wei.scl",withMathJax(helpText("Scale : \\(k\\)")),min=0,max=10,value=1,step=1),
+  radioButtons("wei.plottype", "Choose the plot",
+               list("cdf" = "cdf","pdf"="pdf"))
 ),
 #Cauchy distribution
 conditionalPanel(
   condition="input.illustration==\"cau\"",
   sliderInput("cau.loc",withMathJax(helpText("Location : \\(x_0\\)")),min=-10,max=10,value=1,step=1),
-  sliderInput("cau.scl",withMathJax(helpText("Scale : \\(\\gamma\\)")),min=0,max=10,value=1,step=1)
+  sliderInput("cau.scl",withMathJax(helpText("Scale : \\(\\gamma\\)")),min=0,max=10,value=1,step=1),
+  radioButtons("cau.plottype", "Choose the plot",
+               list("cdf" = "cdf","pdf"="pdf"))
 ),
 #Exponential distribution
 conditionalPanel(
   condition="input.illustration==\"exp\"",
   sliderInput("exp.rate",withMathJax(helpText("Rate : \\(\\lambda\\)")),min=0,max=10,value=1,step=1),
-  radioButtons("log","Log:",c("True" = "t","False"="f"))
+  radioButtons("log","Log:",c("True" = "t","False"="f")),
+  radioButtons("exp.plottype", "Choose the plot",
+               list("cdf" = "cdf","pdf"="pdf"))
 ),
 #pareto distribution
 conditionalPanel(
   condition="input.illustration==\"par\"",
   sliderInput("par.loc",withMathJax(helpText("Location : \\(\\mu\\)")),min=0,max=50,value=1,step=1),
-  sliderInput("par.shp",withMathJax(helpText("Scale : \\(\\sigma\\)")),min=0,max=50,value=1,step=1)
+  sliderInput("par.shp",withMathJax(helpText("Scale : \\(\\sigma\\)")),min=0,max=50,value=1,step=1),
+  radioButtons("par.plottype", "Choose the plot",
+               list("cdf" = "cdf","pdf"="pdf"))
 ),
 #normal distribution
 conditionalPanel(
   condition="input.illustration==\"norm\"",
   sliderInput("norm.mean",withMathJax(helpText("Mean : \\(\\mu\\)")),min=-100,max=100,value=1,step=1),
-  sliderInput("norm.sd",withMathJax(helpText("Standard Deviation : \\(\\sigma\\)")),min=0,max=100,value=1,step=1)
+  sliderInput("norm.sd",withMathJax(helpText("Standard Deviation : \\(\\sigma\\)")),min=0,max=100,value=1,step=1),
+  radioButtons("norm.plottype", "Choose the plot",
+               list("cdf" = "cdf","pdf"="pdf"))
 )
 
 

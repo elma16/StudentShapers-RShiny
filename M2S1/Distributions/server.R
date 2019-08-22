@@ -15,7 +15,16 @@ shinyServer(function(input, output) {
       shp <- input$gamma.shp
       rt <- input$gamma.rt
       x <- seq(0,10,length.out=500)
-      plot(x,dgamma(x,shp,rt),type="l",xlab="",ylab="")
+      if (input$gamma.plottype=="pdf"){
+        plot(x,dgamma(x,shp,rt),type="l",ylim=c(0,dnorm(0)),xlab="",ylab="")
+        #lines(x,dnorm(x,mean=ncp),col="blue")
+        legend("topright",expression(t[n](delta),N(delta,1)),title="pdf of",col=c("black","blue"),lty=1)
+      }
+      if (input$gamma.plottype=="cdf"){
+        plot(x,pgamma(x,shp,rt),type="l",ylim=c(0,1),xlab="",ylab="")
+        #lines(x,pnorm(x,mean=ncp),col="blue")
+        legend("topleft",expression(t[n](delta),N(delta,1)),title="cdf of",col=c("black","blue"),lty=1)
+      }
     }
   #t-distribution
     if (input$illustration=="tdistr"){
@@ -64,7 +73,10 @@ shinyServer(function(input, output) {
       n <- input$unif.n
       minmax <- input$unif.minmax
       x <- seq(-20,20,length.out=500)
-      plot(x,dunif(x,minmax[1],minmax[2]),type="l",xlab="",ylab="")
+      if (input$unif.plottype=="pdf"){
+        plot(x,dunif(x,minmax[1],minmax[2]),type="l",xlab="",ylab="")}
+      if (input$unif.plottype=="cdf"){
+        plot(x,punif(x,minmax[1],minmax[2]),type="l",xlab="",ylab="")}
     }
     #F dist
     if (input$illustration=="f"){
@@ -73,7 +85,11 @@ shinyServer(function(input, output) {
       df2 <- input$f.df2
       ncp <- input$f.ncp
       x <- seq(0,10,length.out=500)
-      plot(x,df(x,df1,df2,ncp),type="l",xlab="",ylab="")
+      
+      if (input$f.plottype=="pdf"){
+        plot(x,df(x,df1,df2,ncp),type="l",xlab="",ylab="")}
+      if (input$f.plottype=="cdf"){
+        plot(x,pf(x,df1,df2,ncp),type="l",xlab="",ylab="")}
     }
     #weibull dist
     if (input$illustration=="wei"){
@@ -81,7 +97,11 @@ shinyServer(function(input, output) {
       shp <- input$wei.shp
       scl <- input$wei.scl
       x <- seq(0,10,length.out=500)
-      plot(x,dweibull(x,shp,scl),type="l",xlab="",ylab="")
+      
+      if (input$wei.plottype=="pdf"){
+        plot(x,dweibull(x,shp,scl),type="l",xlab="",ylab="")}
+      if (input$wei.plottype=="cdf"){
+        plot(x,pweibull(x,shp,scl),type="l",xlab="",ylab="")}
     }
     #cauchy dist
     if (input$illustration=="cau"){
@@ -89,14 +109,22 @@ shinyServer(function(input, output) {
       loc <- input$cau.loc
       scl <- input$cau.scl
       x <- seq(0,10,length.out=500)
-      plot(x,dcauchy(x,loc,scl),type="l",xlab="",ylab="")
+      
+      if (input$cau.plottype=="pdf"){
+        plot(x,dcauchy(x,loc,scl),type="l",xlab="",ylab="")}
+      if (input$cau.plottype=="cdf"){
+        plot(x,pcauchy(x,loc,scl),type="l",xlab="",ylab="")}
     }
     #exponential dist
     if (input$illustration=="exp"){
       par(mar=c(2.1,2.1,0.1,0.1))
       rate <- input$exp.rate
       x <- seq(0,10,length.out=500)
-      plot(x,dexp(x,rate,),type="l",xlab="",ylab="")
+      
+      if (input$exp.plottype=="pdf"){
+        plot(x,dexp(x,rate),type="l",xlab="",ylab="")}
+      if (input$exp.plottype=="cdf"){
+        plot(x,pexp(x,rate),type="l",xlab="",ylab="")}
     }
     #normal dist
     if (input$illustration=="norm"){
@@ -104,7 +132,12 @@ shinyServer(function(input, output) {
       mean <- input$norm.mean
       sd <- input$norm.sd
       x <- seq(0,10,length.out=500)
-      plot(x,dnorm(x,mean,sd),type="l",xlab="",ylab="")
+      
+      if (input$norm.plottype=="pdf"){
+        plot(x,dnorm(x,mean,sd),type="l",xlab="",ylab="")}
+      if (input$norm.plottype=="cdf"){
+        plot(x,pnorm(x,mean,sd),type="l",xlab="",ylab="")}
+
     }
     #pareto dist
     if (input$illustration=="par"){
@@ -112,7 +145,11 @@ shinyServer(function(input, output) {
       loc <- input$par.loc
       shp <- input$par.shp
       x <- seq(0,10,length.out=500)
-      plot(x,dpareto(x,loc,shp),type="l",xlab="",ylab="")
+      
+      if (input$par.plottype=="pdf"){
+        plot(x,dpareto(x,loc,shp),type="l",xlab="",ylab="")}
+      if (input$par.plottype=="cdf"){
+        plot(x,ppareto(x,loc,shp),type="l",xlab="",ylab="")}
     }
   })
   #multivariable normal
