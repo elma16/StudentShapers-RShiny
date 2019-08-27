@@ -14,7 +14,7 @@ Repository for my rshiny apps for the 2019 Imperial Student Shapers Project.
  - [x] Convolutions
 
 
-##Installation Instructions
+## Installation Instructions
 
 If you wish to run these webapps on your local machine (the permanent URL for this has not been constructed yet), 
 
