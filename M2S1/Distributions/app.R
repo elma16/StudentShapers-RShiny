@@ -4,6 +4,8 @@ library(shiny)
 library(ggplot2)
 library(shinythemes)
 library(EnvStats)
+library(Compositional)
+library(MCMCpack)
 #-----------------------------------------------
 
 ui <- navbarPage("Distributions in M2S1",
@@ -73,7 +75,7 @@ ui <- navbarPage("Distributions in M2S1",
                                 conditionalPanel(
                                     condition="input.illustration==\"unif\"",
                                     sliderInput("unif.n",withMathJax(helpText("Number of observations : \\(n\\)")),min=1,max=100,value=5,step=1),
-                                    sliderInput("unif.minmax",withMathJax(helpText("Lower and upper bounds : \\(minmax\\)")),min = -20, max = 20,value = c(-15,15)),
+                                    sliderInput("unif.minmax",withMathJax(helpText("Lower and upper bounds :")),min = -20, max = 20,value = c(-15,15)),
                                     radioButtons("unif.plottype", "Choose the plot",
                                                  list("cdf" = "cdf","pdf"="pdf"))
                                 ),
@@ -106,7 +108,6 @@ ui <- navbarPage("Distributions in M2S1",
                                 conditionalPanel(
                                     condition="input.illustration==\"exp\"",
                                     sliderInput("exp.rate",withMathJax(helpText("Rate : \\(\\lambda\\)")),min=0,max=10,value=1,step=1),
-                                    radioButtons("log","Log:",c("True" = "t","False"="f")),
                                     radioButtons("exp.plottype", "Choose the plot",
                                                  list("cdf" = "cdf","pdf"="pdf"))
                                 ),
@@ -125,7 +126,11 @@ ui <- navbarPage("Distributions in M2S1",
                                     sliderInput("norm.sd",withMathJax(helpText("Standard Deviation : \\(\\sigma\\)")),min=0,max=100,value=1,step=1),
                                     radioButtons("norm.plottype", "Choose the plot",
                                                  list("cdf" = "cdf","pdf"="pdf"))
-                                )
+                                ),
+                                #links to all the code
+                                helpText(a(href = "https://github.com/elma16/StudentShapers-RShiny/blob/master/M2S1/Distributions/app.R", target = "_blank", "View code")),
+                                helpText(a(href = "https://github.com/elma16/StudentShapers-RShiny", target = "_blank", "Check out other apps")),
+                                helpText(a(href = "https://openintro.org", target = "_blank", "Learn more for free!"))
                                 
                                 
                             ),
@@ -219,10 +224,10 @@ ui <- navbarPage("Distributions in M2S1",
                                 #dirichlet distribution
                                 conditionalPanel(
                                     condition="input.illustration1==\"dir\"",
-                                    sliderInput("dir.df","degrees of freedom \\(n\\)",min=1,max=100,value=1,step=1),
-                                    sliderInput("dir.ncp","non-centrality parameter \\(\\delta^2\\)",min=0,max=5,value=0,step=0.1),
-                                    radioButtons("dirplottype", "Choose the plot",
-                                                 list("cdf" = "cdf","pdf"="pdf"))
+                                    sliderInput("dir.n","Number of random vectors: \\(n\\)",min=1,max=2200,value=200,step=1),
+                                    sliderInput("dir.a1","Vector parameter \\(\\alpha_1\\)",min=0,max=5,value=0.1,step=0.1),
+                                    sliderInput("dir.a2","Vector param \\(\\alpha_2\\)",min=0,max=5,value=0.1,step=0.1),
+                                    sliderInput("dir.a3","Vector param \\(\\alpha_3\\)",min=0,max=5,value=0.1,step=0.1)
                                 ),
                                 #multivariable normal
                                 conditionalPanel(
@@ -428,13 +433,12 @@ server <- function(input, output) {
         }
         #dirichlet distribution
         if (input$illustration1=="dir"){
-            rho <- input$mvnorm.rho
-            sd1 <- input$mvnorm.sd1
-            sd2 <- input$mvnorm.sd2
-            x <- y <- seq(-3,3,by=0.01);
-            Sigma <- diag(c(sd1,sd2))%*% matrix(c(1,rho,rho,1),nrow=2)%*% diag(c(sd1,sd2))
-            par(mar=c(2.1,2.1,0.1,0.1))
-            contour(x,y,outer(x,y,FUN=function(x,y) dmvnorm(cbind(x,y),sigma=Sigma)))
+            n <- input$dir.n
+            a1 <- input$dir.a1
+            a2 <- input$dir.a2
+            a3 <- input$dir.a3
+            draws <- rdirichlet(n, c(a1,a2,a3) )
+            bivt.contour(draws)
         }
         
     })
