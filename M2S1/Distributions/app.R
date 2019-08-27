@@ -258,7 +258,9 @@ ui <- navbarPage("Distributions in M2S1",
                    ),
                    tabPanel("Location and Scale Families", 
                             sidebarPanel(
-                                selectInput("lsfam","Choose distribution:", choices = c("binomial" = "bin","poisson"="poi"))
+                                selectInput("lsfam1","Choose first distribution:", choices = c("binomial" = "bin","poisson"="poi")),
+                                selectInput("lsfam2","Choose second distribution:", choices = c("binomial" = "bin","poisson"="poi"))
+                                
                             ),
                             conditionalPanel(
                                 condition="input.lsfam==\"bin\"",
@@ -442,6 +444,13 @@ server <- function(input, output) {
         }
         
     })
+    
+   # output$lsfam <- renderPlot({
+    #    if (input$lsfam1 == "bin"){
+    #        
+    #    }
+    # })
+        
 }
 
 shinyApp(ui = ui, server = server)
