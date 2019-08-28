@@ -1,23 +1,9 @@
 
+
+library(shiny)
 library(ggplot2)
-#library(Cairo)   # For nicer ggplot2 output when deployed on Linux
 
-ui <- fluidPage(
-    fluidRow(
-        column(width = 6,
-               plotOutput("plot1", height = 350,
-                          click = "plot1_click",
-                          brush = brushOpts(
-                              id = "plot1_brush"
-                          )
-               ),
-               actionButton("exclude_toggle", "Toggle points"),
-               actionButton("exclude_reset", "Reset")
-        )
-    )
-)
-
-server <- function(input, output) {
+shinyServer(function(input, output) {
     # For storing which rows have been excluded
     vals <- reactiveValues(
         keeprows = rep(TRUE, nrow(mtcars))
@@ -53,9 +39,4 @@ server <- function(input, output) {
         vals$keeprows <- rep(TRUE, nrow(mtcars))
     })
     
-}
-
-shinyApp(ui, server)
-
-
-
+})

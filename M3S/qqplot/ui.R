@@ -1,8 +1,9 @@
+
 library(shiny)
 library(ggplot2)
 
 # Define UI for application that draws a histogram
-ui <- fluidPage(
+shinyUI(fluidPage(
     
     # Application title
     title = "QQ plots",
@@ -56,26 +57,8 @@ ui <- fluidPage(
         ),
         column(3, offset = 1,
                h4("General Information")
-
+               
         )
     )
-)
+))
 
-
-
-# Define server logic required to draw a histogram
-server <- function(input, output) {
-    
-    output$qqplot <- renderPlot({
-        # normal dists given the values from sliders
-        
-        x <- rnorm(n = input$n1, mean = input$mean1,sd = input$sd1)
-        y <- rnorm(n = input$n2, mean = input$mean2,sd = input$sd2)
-        # draw the qqplot of the two normals
-        qqplot(x,y)
-        abline(0,1,col=2)
-    })
-}
-
-# Run the application 
-shinyApp(ui = ui, server = server)
