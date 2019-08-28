@@ -180,7 +180,10 @@ shinyUI(navbarPage("Distributions in M2S1",
                               #chi-square dist
                               conditionalPanel(
                                   condition="input.illustration==\"chisq\"",
-                                  p("The chi-square distribution is related to other distributions in the following way")
+                                  p("Facts:
+                                    
+                                    a) If Z is a Norm(0,1) random variable, then Z^2 ~ chi^2_1
+                                    b) If X_1 , ... , X_n are independent and X_i ~ chi_p^2 then X_1 + X_2 + ... + X_n ~ chi^2_{p_1 + ... + p_n}")
                               ),
                               #dirichlet distribution
                               conditionalPanel(
