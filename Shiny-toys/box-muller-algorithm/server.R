@@ -14,12 +14,13 @@ shinyServer(function(input, output) {
             u1 <- dunif(x,0,1)
             u2 <- dunif(x,0,1)
             theta <- 2*pi*u1
+            #base e!
             R <- sqrt(-2*log10(u2))
             u1Trans <- R*cos(theta)
             u2Trans <- R*sin(theta)
             #plot(x,dunif(x,0,1),type="l",xlab="",ylab="")
             #first transform
-            plot(x,u1Trans,type="l",xlab="",ylab="")
+            plot(x,u1,type="l",xlab="",ylab="")
             #second transform
             #plot(x,dunif(x,0,1),type="l",xlab="",ylab="")
 

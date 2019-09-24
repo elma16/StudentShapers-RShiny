@@ -1,133 +1,190 @@
+#----------
+#loading the required modules
 library(shiny)
 library(ggplot2)
 library(shinythemes)
 library(EnvStats)
 library(Compositional)
 library(MCMCpack)
+library(mvtnorm)
+#----------
 
 shinyUI(navbarPage("Distributions in M2S1",
-                 #don't quite understand what the point of this is
-                 #includeHTML("navbar.html"),
-                 
-                 #changes the theme of the webpage
+                 #changing the theme of the webpage
                  theme = shinythemes::shinytheme("cerulean"),
                  
                  #title
-                 #headerPanel("Illustrations in M2S1"),
+                 tabPanel("Introduction",
+                          p("Welcome! Think of this web application as interactive form of the formula sheet provided for M1S and M2S1. Feel free to play around with it!")
+                          ),
                  
-                 tabPanel("Univariate Families",
+                 tabPanel("Univariate Discrete Families",
+                          sidebarPanel(
+                            selectInput("illustration3", "Choose Distribution:",
+                                        #the options for the distributions to choose between
+                                        choices = c("Bernoulli" = "bern", "Binomial" = "bin", "Poisson" = "poi", "Geometric" = "geom" , "Negative Binomial" = "negbin")),
+                            
+                            #bernoulli
+                            conditionalPanel(
+                              condition="input.illustration3==\"bern\"",
+                              sliderInput("bern.p","Probability of success \\(p\\)",min=0,max=1,value=0.5,step=0.01),
+                              radioButtons("bern.plottype", "Choose the plot",
+                                           list("pmf"="pmf","cdf" = "cdf"))
+                            ),
+                            #binomial
+                            conditionalPanel(
+                              condition="input.illustration3==\"bin\"",
+                              sliderInput("bin.n","Number of trials \\(n\\)",min=0,max=100,value=10,step=1),
+                              sliderInput("bin.p","Probability of success \\(p\\)",min=0,max=1,value=0.5,step=0.01),
+                              radioButtons("bin.plottype", "Choose the plot",
+                                           list("pmf"="pmf","cdf" = "cdf"))
+                            ),
+                            #poisson
+                            conditionalPanel(
+                              condition="input.illustration3==\"poi\"",
+                              sliderInput("poi.lam","Rate \\(\\lambda\\)",min=1,max=50,value=10,step=1),
+                              radioButtons("poi.plottype", "Choose the plot",
+                                           list("pmf"="pmf","cdf" = "cdf"))
+                            ),
+                            #geometric
+                            conditionalPanel(
+                              condition="input.illustration3==\"geom\"",
+                              sliderInput("geom.p","Probability of success \\(p\\)",min=0,max=1,value=0.5,step=0.01),
+                              radioButtons("geom.plottype", "Choose the plot",
+                                           list("pmf"="pmf","cdf" = "cdf"))
+                            ),
+                            #negative binomial
+                            conditionalPanel(
+                              condition="input.illustration3==\"negbin\"",
+                              sliderInput("negbin.n","Number of trials \\(n\\)",min=1,max=50,value=10,step=1),
+                              sliderInput("negbin.p","Probability of success \\(p\\)",min=0,max=1,value=0.5,step=0.01),
+                              radioButtons("negbin.plottype", "Choose the plot",
+                                           list("pdf"="pdf","cdf" = "cdf"))
+                            ),
+                            
+                            #links to all the code
+                            helpText(a(href = "https://github.com/elma16/StudentShapers-RShiny/tree/master/M2S1/Distributions", target = "_blank", "View code")),
+                            helpText(a(href = "https://github.com/elma16/StudentShapers-RShiny", target = "_blank", "Check out other apps"))
+                            
+                            
+                          ),
+                          
+                          mainPanel(
+                            plotOutput("disccdf")
+                          )
+
+                          ),
+                 tabPanel("Univariate Continuous Families",
                           sidebarPanel(
                               selectInput("illustration", "Choose Distribution:",
                                           #the options for the distributions to choose between
-                                          choices = c("Uniform" = "unif", "Exponential" = "exp", "Gamma" = "gamma", "Weibull" = "wei" , "Normal" = "norm" , "student-t"="tdistr", "Pareto" = "par" ,"\\(\\beta\\)"="b"  , "\\(\\chi^2\\)"="chisq", "F" = "f","Cauchy" = "cau")),
+                                          choices = c("Uniform" = "unif", "Exponential" = "exp", "Gamma" = "gamma", "Weibull" = "wei" , "Normal" = "norm" , "Student-t"="tdistr", "Pareto" = "par" ,"\\(\\beta\\)"="b"  , "\\(\\chi^2\\)"="chisq", "F" = "f","Cauchy" = "cau")),
                               #gamma
                               conditionalPanel(
                                   condition="input.illustration==\"gamma\"",
-                                  sliderInput("gamma.shp","Shape \\(n\\)",min=1,max=100,value=10,step=1),
-                                  sliderInput("gamma.rt","Rate \\(\\delta^2\\)",min=0,max=50,value=5,step=0.1),
+                                  sliderInput("gamma.shp","Shape \\(n\\)",min=1,max=50,value=10,step=1),
+                                  sliderInput("gamma.rt","Rate \\(\\delta^2\\)",min=0,max=50,value=25,step=0.1),
                                   radioButtons("gamma.plottype", "Choose the plot",
-                                               list("cdf" = "cdf","pdf"="pdf"))
+                                               list("pdf"="pdf","cdf" = "cdf"))
                               ),
                               #multivariable normal
                               conditionalPanel(
                                   condition="input.illustration==\"mvnorm\"",
-                                  sliderInput("mvnorm.sd1","\\(\\sigma_1\\)",min=0.1,max=10,value=1,step=0.1),
-                                  sliderInput("mvnorm.sd2","\\(\\sigma_2\\)",min=0.1,max=10,value=1,step=0.1),
+                                  sliderInput("mvnorm.sd1","\\(\\sigma_1\\)",min=0.1,max=50,value=21,step=0.1),
+                                  sliderInput("mvnorm.sd2","\\(\\sigma_2\\)",min=0.1,max=50,value=34,step=0.1),
                                   sliderInput("mvnorm.rho","\\(\\rho\\)",min=-0.99,max=0.99,value=0,step=0.01)
                               ),
                               #t distribution
                               conditionalPanel(
                                   condition="input.illustration==\"tdistr\"",
-                                  sliderInput("tdistr.df","degrees of freedom \\(n\\)",min=1,max=100,value=1,step=1),
+                                  sliderInput("tdistr.df","degrees of freedom \\(n\\)",min=1,max=50,value=31,step=1),
                                   sliderInput("tdistr.ncp","non-centrality parameter \\(\\delta\\)",min=-3,max=3,value=0,step=0.1),
                                   radioButtons("tdistr.plottype", "Choose the plot",
-                                               list("cdf" = "cdf","pdf"="pdf"))
+                                               list("pdf" = "pdf","cdf" = "cdf"))
                               ),
                               #chi-square dist
                               conditionalPanel(
                                   condition="input.illustration==\"chisq\"",
-                                  sliderInput("chisq.df","degrees of freedom \\(n\\)",min=1,max=100,value=1,step=1),
+                                  sliderInput("chisq.df","degrees of freedom \\(n\\)",min=1,max=50,value=17,step=1),
                                   sliderInput("chisq.ncp","non-centrality parameter \\(\\delta^2\\)",min=0,max=5,value=0,step=0.1),
                                   radioButtons("chisqplottype", "Choose the plot",
-                                               list("cdf" = "cdf","pdf"="pdf"))
+                                               list("pdf" = "pdf","cdf" = "cdf"))
                               ),
                               #dirichlet distribution
                               conditionalPanel(
                                   condition="input.illustration==\"dir\"",
-                                  sliderInput("dir.df","degrees of freedom \\(n\\)",min=1,max=100,value=1,step=1),
+                                  sliderInput("dir.df","degrees of freedom \\(n\\)",min=1,max=50,value=1,step=1),
                                   sliderInput("dir.ncp","non-centrality parameter \\(\\delta^2\\)",min=0,max=5,value=0,step=0.1),
                                   radioButtons("dirplottype", "Choose the plot",
-                                               list("cdf" = "cdf","pdf"="pdf"))
+                                               list("pdf" = "pdf","cdf" = "cdf"))
                               ),
                               #beta distribution
                               conditionalPanel(
                                   condition="input.illustration==\"b\"",
-                                  sliderInput("b.a",withMathJax(helpText("Shape parameter : \\(\\alpha\\)")),min=0,max=50,value=1,step=1),
-                                  sliderInput("b.b",withMathJax(helpText("Shape parameter : \\(\\beta\\)")),min=0,max=50,value=1,step=1),
+                                  sliderInput("b.a",withMathJax(helpText("Shape parameter : \\(\\alpha\\)")),min=0.1,max=50,value=13.5,step=0.1),
+                                  sliderInput("b.b",withMathJax(helpText("Shape parameter : \\(\\beta\\)")),min=0.1,max=50,value=21,step=0.1),
                                   sliderInput("b.ncp","Non-centrality parameter : \\(\\delta^2\\)",min=0,max=0.99,value=0,step=0.01),
                                   radioButtons("bplottype", "Choose the plot",
-                                               list("cdf" = "cdf","pdf"="pdf"))
+                                               list("pdf" = "pdf","cdf" = "cdf"))
                               ),
                               #uniform distribution
                               conditionalPanel(
                                   condition="input.illustration==\"unif\"",
-                                  sliderInput("unif.n",withMathJax(helpText("Number of observations : \\(n\\)")),min=1,max=100,value=5,step=1),
                                   sliderInput("unif.minmax",withMathJax(helpText("Lower and upper bounds :")),min = -20, max = 20,value = c(-15,15)),
                                   radioButtons("unif.plottype", "Choose the plot",
-                                               list("cdf" = "cdf","pdf"="pdf"))
+                                               list("pdf" = "pdf","cdf" = "cdf"))
                               ),
                               #F distribution
                               conditionalPanel(
                                   condition="input.illustration==\"f\"",
-                                  sliderInput("f.df1",withMathJax(helpText("Degrees of Freedom : \\(d_1\\)")),min=0,max=10,value=1,step=1),
-                                  sliderInput("f.df2",withMathJax(helpText("Degrees of Freedom : \\(d_2\\)")),min=0,max=10,value=1,step=1),
+                                  sliderInput("f.df1",withMathJax(helpText("Degrees of Freedom : \\(d_1\\)")),min=0,max=50,value=30,step=1),
+                                  sliderInput("f.df2",withMathJax(helpText("Degrees of Freedom : \\(d_2\\)")),min=0,max=50,value=24,step=1),
                                   sliderInput("f.ncp","Non-centrality parameter : \\(\\delta^2\\)",min=0,max=0.99,value=0,step=0.01),
                                   radioButtons("f.plottype", "Choose the plot",
-                                               list("cdf" = "cdf","pdf"="pdf"))
+                                               list("pdf" = "pdf","cdf" = "cdf"))
                               ),
                               #Weibull distribution
                               conditionalPanel(
                                   condition="input.illustration==\"wei\"",
-                                  sliderInput("wei.shp",withMathJax(helpText("Shape : \\(\\lambda\\)")),min=0,max=10,value=1,step=1),
-                                  sliderInput("wei.scl",withMathJax(helpText("Scale : \\(k\\)")),min=0,max=10,value=1,step=1),
+                                  sliderInput("wei.shp",withMathJax(helpText("Shape : \\(\\lambda\\)")),min=0.1,max=50,value=16,step=0.1),
+                                  sliderInput("wei.scl",withMathJax(helpText("Scale : \\(k\\)")),min=0.1,max=50,value=19,step=0.1),
                                   radioButtons("wei.plottype", "Choose the plot",
-                                               list("cdf" = "cdf","pdf"="pdf"))
+                                               list("pdf" = "pdf","cdf" = "cdf"))
                               ),
                               #Cauchy distribution
                               conditionalPanel(
                                   condition="input.illustration==\"cau\"",
-                                  sliderInput("cau.loc",withMathJax(helpText("Location : \\(x_0\\)")),min=-10,max=10,value=1,step=1),
-                                  sliderInput("cau.scl",withMathJax(helpText("Scale : \\(\\gamma\\)")),min=0,max=10,value=1,step=1),
+                                  sliderInput("cau.loc",withMathJax(helpText("Location : \\(x_0\\)")),min=-10,max=50,value=17,step=1),
+                                  sliderInput("cau.scl",withMathJax(helpText("Scale : \\(\\gamma\\)")),min=0,max=50,value=13,step=1),
                                   radioButtons("cau.plottype", "Choose the plot",
-                                               list("cdf" = "cdf","pdf"="pdf"))
+                                               list("pdf" = "pdf","cdf" = "cdf"))
                               ),
                               #Exponential distribution
                               conditionalPanel(
                                   condition="input.illustration==\"exp\"",
-                                  sliderInput("exp.rate",withMathJax(helpText("Rate : \\(\\lambda\\)")),min=0,max=10,value=1,step=1),
+                                  sliderInput("exp.rate",withMathJax(helpText("Rate : \\(\\lambda\\)")),min=0,max=50,value=30,step=0.1),
                                   radioButtons("exp.plottype", "Choose the plot",
-                                               list("cdf" = "cdf","pdf"="pdf"))
+                                               list("pdf" = "pdf","cdf" = "cdf"))
                               ),
                               #pareto distribution
                               conditionalPanel(
                                   condition="input.illustration==\"par\"",
-                                  sliderInput("par.loc",withMathJax(helpText("Location : \\(\\mu\\)")),min=0,max=50,value=1,step=1),
-                                  sliderInput("par.shp",withMathJax(helpText("Scale : \\(\\sigma\\)")),min=0,max=50,value=1,step=1),
+                                  sliderInput("par.loc",withMathJax(helpText("Location : \\(\\mu\\)")),min=0,max=50,value=32,step=1),
+                                  sliderInput("par.shp",withMathJax(helpText("Scale : \\(\\sigma\\)")),min=0,max=50,value=61,step=1),
                                   radioButtons("par.plottype", "Choose the plot",
-                                               list("cdf" = "cdf","pdf"="pdf"))
+                                               list("pdf" = "pdf","cdf" = "cdf"))
                               ),
                               #normal distribution
                               conditionalPanel(
                                   condition="input.illustration==\"norm\"",
-                                  sliderInput("norm.mean",withMathJax(helpText("Mean : \\(\\mu\\)")),min=-100,max=100,value=1,step=1),
-                                  sliderInput("norm.sd",withMathJax(helpText("Standard Deviation : \\(\\sigma\\)")),min=0,max=100,value=1,step=1),
+                                  sliderInput("norm.mean",withMathJax(helpText("Mean : \\(\\mu\\)")),min=-5,max=5,value=0,step=0.1),
+                                  sliderInput("norm.sd",withMathJax(helpText("Standard Deviation : \\(\\sigma\\)")),min=0,max=10,value=1,step=0.1),
                                   radioButtons("norm.plottype", "Choose the plot",
-                                               list("cdf" = "cdf","pdf"="pdf"))
+                                               list("pdf" = "pdf","cdf" = "cdf"))
                               ),
                               #links to all the code
-                              helpText(a(href = "https://github.com/elma16/StudentShapers-RShiny/blob/master/M2S1/Distributions/app.R", target = "_blank", "View code")),
-                              helpText(a(href = "https://github.com/elma16/StudentShapers-RShiny", target = "_blank", "Check out other apps")),
-                              helpText(a(href = "https://openintro.org", target = "_blank", "Learn more for free!"))
+                              helpText(a(href = "https://github.com/elma16/StudentShapers-RShiny/tree/master/M2S1/Distributions", target = "_blank", "View code")),
+                              helpText(a(href = "https://github.com/elma16/StudentShapers-RShiny", target = "_blank", "Check out other apps"))
                               
                               
                           ),
@@ -146,19 +203,33 @@ shinyUI(navbarPage("Distributions in M2S1",
                               #t distribution
                               conditionalPanel(
                                   condition="input.illustration==\"tdistr\"",
-                                  h3(strong("Mean:"))
+                                  h4(strong("pdf:")),
+                                  h4(strong("cdf:")),
+                                  h4(strong("E(x):")),
+                                  h4(strong("Var(x):")),
+                                  h4(strong("mgf:"))
+                                
+                
                               ),
                               #cauchy distribution
                               conditionalPanel(
                                   condition="input.illustration==\"cau\"",
                                   p("The Cauchy distribution has the interesting property that all of the higher moments are undefined."),
-                                  h3(strong("Mean:"))
+                                  h4(strong("pdf:")),
+                                  h4(strong("cdf:")),
+                                  h4(strong("E(x):")),
+                                  h4(strong("Var(x):")),
+                                  h4(strong("mgf:"))
                               ),
                               #norm distribution
                               conditionalPanel(
                                   condition="input.illustration==\"norm\"",
                                   p("The normal distributions"),
-                                  h3(strong("Mean:"))
+                                  h4(strong("pdf:")),
+                                  h4(strong("cdf:")),
+                                  h4(strong("E(x):")),
+                                  h4(strong("Var(x):")),
+                                  h4(strong("mgf:"))
                               ),
                               #gamma distribution
                               conditionalPanel(
@@ -170,12 +241,22 @@ shinyUI(navbarPage("Distributions in M2S1",
                               #exp distribution
                               conditionalPanel(
                                   condition="input.illustration==\"exp\"",
-                                  p("The exponential distribution only has one parameter")
+                                  h4(strong("Params: \\(\\lambda \\in \\mathbb{R}\\)")),
+                                  h4(strong("PDF: \\(\\frac{1}{\\beta - \\alpha}\\)")),
+                                  h4(strong("CDF: \\(\\frac{x - \\alpha}{\\beta - \\alpha}\\) ")),
+                                  h4(strong("E(x): \\(\\frac{(\\alpha + \\beta)^2}{2}\\)")),
+                                  h4(strong("Var(x): \\(\\frac{(\\beta - \\alpha)^2}{12}\\)")),
+                                  h4(strong("MGF: \\(\\frac{e^{\\beta t} - e^{\\alpha t}}{t(\\beta - \\alpha)}\\)"))
                               ),
                               #weibull distribution
                               conditionalPanel(
                                   condition="input.illustration==\"wei\"",
-                                  p("The Weibull distribution is")
+                                  h4(strong("Params: \\(\\alpha < \\beta \\in \\mathbb{R}\\)")),
+                                  h4(strong("PDF: \\(\\frac{1}{\\beta - \\alpha}\\)")),
+                                  h4(strong("CDF: \\(\\frac{x - \\alpha}{\\beta - \\alpha}\\) ")),
+                                  h4(strong("E(x): \\(\\frac{(\\alpha + \\beta)^2}{2}\\)")),
+                                  h4(strong("Var(x): \\(\\frac{(\\beta - \\alpha)^2}{12}\\)")),
+                                  h4(strong("MGF: \\(\\frac{e^{\\beta t} - e^{\\alpha t}}{t(\\beta - \\alpha)}\\)"))
                               ),
                               #chi-square dist
                               conditionalPanel(
@@ -188,29 +269,52 @@ shinyUI(navbarPage("Distributions in M2S1",
                               #dirichlet distribution
                               conditionalPanel(
                                   condition="input.illustration==\"dir\"",
-                                  p("The Dirichlet distribution is an example of a multivariate distribution")
+                                  h4(strong("Params: \\(\\alpha < \\beta \\in \\mathbb{R}\\)")),
+                                  h4(strong("PDF: \\(\\frac{1}{\\beta - \\alpha}\\)")),
+                                  h4(strong("CDF: \\(\\frac{x - \\alpha}{\\beta - \\alpha}\\) ")),
+                                  h4(strong("E(x): \\(\\frac{(\\alpha + \\beta)^2}{2}\\)")),
+                                  h4(strong("Var(x): \\(\\frac{(\\beta - \\alpha)^2}{12}\\)")),
+                                  h4(strong("MGF: \\(\\frac{e^{\\beta t} - e^{\\alpha t}}{t(\\beta - \\alpha)}\\)"))
                               ),
                               #uniform distribution
                               conditionalPanel(
                                   condition="input.illustration==\"unif\"",
-                                  p("The uniform distribution is a very simple distribution."),
-                                  strong("Mean: "),
-                                  strong("Variance:")
+                                  h4(strong("Params: \\(\\alpha < \\beta \\in \\mathbb{R}\\)")),
+                                  h4(strong("PDF: \\(\\frac{1}{\\beta - \\alpha}\\)")),
+                                  h4(strong("CDF: \\(\\frac{x - \\alpha}{\\beta - \\alpha}\\) ")),
+                                  h4(strong("E(x): \\(\\frac{(\\alpha + \\beta)^2}{2}\\)")),
+                                  h4(strong("Var(x): \\(\\frac{(\\beta - \\alpha)^2}{12}\\)")),
+                                  h4(strong("MGF: \\(\\frac{e^{\\beta t} - e^{\\alpha t}}{t(\\beta - \\alpha)}\\)"))
                               ),
                               #pareto distribution
                               conditionalPanel(
                                   condition="input.illustration==\"par\"",
-                                  p("The Pareto distribution, coined by Italian economist Vilfredo Pareto")
+                                  p("The Pareto distribution, coined by Italian economist Vilfredo Pareto"),
+                                  h4(strong("pdf:")),
+                                  h4(strong("cdf:")),
+                                  h4(strong("E(x):")),
+                                  h4(strong("Var(x):")),
+                                  h4(strong("mgf:"))
                               ),
                               #F distribution
                               conditionalPanel(
                                   condition="input.illustration==\"f\"",
-                                  p("The F distribution is a distribution less often discussed in M2S1")
+                                  p("The F distribution is a distribution less often discussed in M2S1"),
+                                  h4(strong("pdf:")),
+                                  h4(strong("cdf:")),
+                                  h4(strong("E(x):")),
+                                  h4(strong("Var(x):")),
+                                  h4(strong("mgf:"))
                               ),
                               #beta distribution
                               conditionalPanel(
                                   condition="input.illustration==\"b\"",
-                                  p("The beta distribution is part of a family")
+                                  p("The beta distribution is part of a family"),
+                                  h4(strong("pdf:")),
+                                  h4(strong("cdf:")),
+                                  h4(strong("E(x):")),
+                                  h4(strong("Var(x):")),
+                                  h4(strong("mgf:"))
                               )
                           )
                           
@@ -255,20 +359,6 @@ shinyUI(navbarPage("Distributions in M2S1",
                                   helpText("f")
                               )
                           )
-                 ),
-                 tabPanel("Location and Scale Families", 
-                          sidebarPanel(
-                              selectInput("lsfam1","Choose first distribution:", choices = c("binomial" = "bin","poisson"="poi")),
-                              selectInput("lsfam2","Choose second distribution:", choices = c("binomial" = "bin","poisson"="poi"))
-                              
-                          ),
-                          conditionalPanel(
-                              condition="input.lsfam==\"bin\"",
-                              helpText("blah")
-                          )
-                          
                  )
-                 
-                 #includeHTML("mycode.html")
 ))
 

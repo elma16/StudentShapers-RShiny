@@ -34,7 +34,7 @@ shinyUI(navbarPage("Random Walks",
                             #lattice
                             conditionalPanel(
                                 condition="input.illustration==\"2d\"",
-                                sliderInput("two.N",withMathJax(helpText("Mean : \\(\\mu\\)")),min=10,max=1000000,value=10000,step=1)
+                                sliderInput("two.N",withMathJax(helpText("Steps : \\(N\\)")),min=10,max=1000000,value=10000,step=1)
                             ),
                             #angled
                             conditionalPanel(

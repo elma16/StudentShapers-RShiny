@@ -1,3 +1,4 @@
+#---------
 library(shiny)
 library(ggplot2)
 library(shinythemes)
@@ -5,7 +6,69 @@ library(EnvStats)
 library(Compositional)
 library(MCMCpack)
 
+#----------
+
+
+#animate on the slider thing
 shinyServer(function(input, output) {
+    
+    #discrete dist
+    output$disccdf <- renderPlot({
+        if (input$illustration3=="bern"){
+            par(mar=c(2.1,2.1,0.1,0.1))
+            p<- input$bern.p
+            x <- seq(0,10,1)
+            if (input$bin.plottype=="pmf")
+                plot(x,dbinom(x,1,p),type="p",xlab="",ylab="")
+            if (input$bin.plottype=="cdf")
+                plot(x,pbinom(x,1,p),type="p",xlab="",ylab="")
+            
+            
+        }
+        if (input$illustration3=="bin"){
+            par(mar=c(2.1,2.1,0.1,0.1))
+            n <- input$bin.n
+            p <- input$bin.p
+            x <- seq(0,100,1)
+            if (input$bin.plottype=="pmf")
+                plot(x,dbinom(x,n,p),type="p",xlab="",ylab="")
+            if (input$bin.plottype=="cdf")
+                plot(x,pbinom(x,n,p),type="p",xlab="",ylab="")
+            
+        }
+        if (input$illustration3=="poi"){
+            par(mar=c(2.1,2.1,0.1,0.1))
+            lam <- input$poi.lam
+            x <- seq(0,100,1)
+            if (input$bin.plottype=="pmf")
+                plot(x,dpois(x,lam),type="p",xlab="",ylab="")
+            if (input$bin.plottype=="cdf")
+                plot(x,ppois(x,lam),type="p",xlab="",ylab="")
+            
+        }
+        if (input$illustration3=="geom"){
+            par(mar=c(2.1,2.1,0.1,0.1))
+            p<- input$geom.p
+            x <- seq(0,100,1)
+            if (input$bin.plottype=="pmf")
+                plot(x,dgeom(x,p),type="p",xlab="",ylab="")
+            if (input$bin.plottype=="cdf")
+                plot(x,pgeom(x,p),type="p",xlab="",ylab="")
+            
+        }
+        if (input$illustration3=="negbin"){
+            par(mar=c(2.1,2.1,0.1,0.1))
+            n <- input$negbin.n
+            p <- input$negbin.p
+            x <- seq(0,100,1)
+            if (input$bin.plottype=="pmf")
+                plot(x,dnbinom(x,n,p),type="p",xlab="",ylab="")
+            if (input$bin.plottype=="cdf")
+                plot(x,pnbinom(x,n,p),type="p",xlab="",ylab="")
+            
+        }
+        
+    })
     
     #univariate dists
     #gamma
@@ -14,7 +77,7 @@ shinyServer(function(input, output) {
             par(mar=c(2.1,2.1,0.1,0.1))
             shp <- input$gamma.shp
             rt <- input$gamma.rt
-            x <- seq(0,10,length.out=500)
+            x <- seq(-5,5,by=0.02)
             if (input$gamma.plottype=="pdf"){
                 plot(x,dgamma(x,shp,rt),type="l",ylim=c(0,dnorm(0)),xlab="",ylab="")
                 #lines(x,dnorm(x,mean=ncp),col="blue")
@@ -131,7 +194,7 @@ shinyServer(function(input, output) {
             par(mar=c(2.1,2.1,0.1,0.1))
             mean <- input$norm.mean
             sd <- input$norm.sd
-            x <- seq(0,10,length.out=500)
+            x <- seq(-5,5,length.out=500)
             
             if (input$norm.plottype=="pdf"){
                 plot(x,dnorm(x,mean,sd),type="l",xlab="",ylab="")}
@@ -152,6 +215,9 @@ shinyServer(function(input, output) {
                 plot(x,ppareto(x,loc,shp),type="l",xlab="",ylab="")}
         }
     })
+
+
+    
     #multivariable normal
     output$mvcdf <- renderPlot({
         if (input$illustration1=="mvnorm"){
@@ -174,6 +240,9 @@ shinyServer(function(input, output) {
         }
         
     })
+    
+
+
     
     # output$lsfam <- renderPlot({
     #    if (input$lsfam1 == "bin"){
