@@ -15,14 +15,17 @@ shinyUI(navbarPage("Distributions in M2S1",
                  
                  #title
                  tabPanel("Introduction",
-                          p("Welcome! Think of this web application as interactive form of the formula sheet provided for M1S and M2S1. Feel free to play around with it!")
-                          ),
-                 
+                          #img(src='Imperial-logo.svg', height = "20%", width="20%", align = "right"),
+                          h1("This is an interactive form of the formula sheet, applicable for students of M1S and M2S1."),
+                          h2("In here are lots of the core facts for each of the distributions, along with the plots of the function"),
+                          h2("Feel free to play around with it!")
+                 ),
                  tabPanel("Univariate Discrete Families",
                           sidebarPanel(
                             selectInput("illustration3", "Choose Distribution:",
                                         #the options for the distributions to choose between
-                                        choices = c("Bernoulli" = "bern", "Binomial" = "bin", "Poisson" = "poi", "Geometric" = "geom" , "Negative Binomial" = "negbin")),
+                                        choices = c("Bernoulli" = "bern", "Binomial" = "bin", "Poisson" = "poi", "Geometric" = "geom" , "Negative Binomial" = "negbin")
+                                        ),
                             
                             #bernoulli
                             conditionalPanel(
@@ -225,7 +228,7 @@ shinyUI(navbarPage("Distributions in M2S1",
                               conditionalPanel(
                                   condition="input.illustration==\"norm\"",
                                   p("The normal distributions"),
-                                  h4(strong("pdf:")),
+                                  h4(strong("pdf: \\(\\frac{1}{\\beta - \\alpha}\\)")),
                                   h4(strong("cdf:")),
                                   h4(strong("E(x):")),
                                   h4(strong("Var(x):")),
@@ -266,6 +269,7 @@ shinyUI(navbarPage("Distributions in M2S1",
                                     a) If Z is a Norm(0,1) random variable, then Z^2 ~ chi^2_1
                                     b) If X_1 , ... , X_n are independent and X_i ~ chi_p^2 then X_1 + X_2 + ... + X_n ~ chi^2_{p_1 + ... + p_n}")
                               ),
+                              
                               #dirichlet distribution
                               conditionalPanel(
                                   condition="input.illustration==\"dir\"",

@@ -76,7 +76,7 @@ shinyServer(function(input, output) {
             start<-cbind(0,0)
             
             points(start,pch=4,col="red")
-            points(end,pch=4,col="red")
+            points(end,pch=4,col="black")
             
         }
         
