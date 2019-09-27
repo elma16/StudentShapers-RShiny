@@ -73,6 +73,7 @@ shinyUI(navbarPage("Distributions in M2S1",
                           ),
                           
                           mainPanel(
+                            img(src='Imperial-logo.svg', height = "20%", width="20%", align = "right"),
                             plotOutput("disccdf")
                           )
 
